@@ -143,6 +143,58 @@
   </section>
 
 
+<section id="mapa-yucatan" style="padding:42px 0;background:#f8f5ec">
+  <div class="wrap">
+    <div class="section-heading" style="text-align:center">
+      <p class="eyebrow">EXPLORA EL DESTINO</p>
+      <h2>Descubre Yucatán en el mapa</h2>
+      <p>Explora nuestros destinos y planea tu próxima aventura con Yucatowntravel.</p>
+    </div>
+
+    <div id="mapa-yucatowntravel"
+      style="height:430px;width:100%;border-radius:18px;overflow:hidden;border:1px solid #d7c59a;z-index:1">
+    </div>
+
+    <p style="font-size:13px;color:#52615c;margin-top:12px;text-align:center">
+      Salidas desde Progreso y Mérida · Ubicaciones orientativas.
+    </p>
+  </div>
+</section>
+
+<link rel="stylesheet"
+  href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+(function () {
+  const mapElement = document.getElementById('mapa-yucatowntravel');
+  if (!mapElement || mapElement.dataset.iniciado || !window.L) return;
+  mapElement.dataset.iniciado = 'si';
+
+  const map = L.map(mapElement).setView([20.65, -89.1], 8);
+
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '&copy; OpenStreetMap contributors',
+    maxZoom: 18
+  }).addTo(map);
+
+  const lugares = [
+    ['Progreso · Salida principal', 21.283, -89.665],
+    ['Mérida · Zona de salida', 20.967, -89.624],
+    ['Chichén Itzá', 20.684, -88.568],
+    ['Uxmal', 20.360, -89.771],
+    ['Las Coloradas', 21.608, -87.991],
+    ['Cenotes de Santa Bárbara', 20.704, -89.209]
+  ];
+
+  lugares.forEach(function (lugar) {
+    L.marker([lugar[1], lugar[2]])
+      .addTo(map)
+      .bindPopup('<strong>' + lugar[0] + '</strong><br>Consulta tu recorrido con Yucatowntravel.');
+  });
+})();
+</script>
+  
   <section id="zonas" style="padding-top:28px;padding-bottom:28px;background:#fffaf0">
     <div class="wrap">
       <div class="section-head">
