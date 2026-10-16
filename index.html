@@ -252,8 +252,10 @@
   
 const quoteForm = document.getElementById('quote-form');
 
+
+
 if (quoteForm) {
-  quoteForm.addEventListener('submit', async event => {
+  quoteForm.addEventListener('submit', event => {
     event.preventDefault();
 
     const formData = new FormData(quoteForm);
@@ -283,34 +285,46 @@ if (quoteForm) {
     const summary = lines.join('\n');
     const status = document.getElementById('quote-status');
 
-    window.open('https://m.me/191566717994401', '_blank');
+    let summaryBox = document.getElementById('quote-summary');
 
-    let copied = false;
+    if (!summaryBox) {
+      summaryBox = document.createElement('textarea');
+      summaryBox.id = 'quote-summary';
+      summaryBox.rows = 10;
+      summaryBox.readOnly = true;
+      summaryBox.style.cssText =
+        'display:block;width:100%;padding:12px;margin-top:12px;border:1px solid #087e80;border-radius:10px;font:inherit;';
 
-    try {
-      await navigator.clipboard.writeText(summary);
-      copied = true;
-    } catch (error) {
-      try {
-        const textarea = document.createElement('textarea');
-        textarea.value = summary;
-        textarea.style.position = 'fixed';
-        textarea.style.left = '-9999px';
-        document.body.appendChild(textarea);
-        textarea.select();
-        copied = document.execCommand('copy');
-        textarea.remove();
-      } catch (copyError) {
-        copied = false;
-      }
+      status.insertAdjacentElement('afterend', summaryBox);
     }
 
-    status.textContent = copied
-      ? 'Resumen copiado. En Messenger, pega el mensaje y pulsa Enviar.'
-      : 'Messenger está abierto. Si no se copió el resumen, vuelve aquí e inténtalo de nuevo.';
+    summaryBox.value = summary;
+    status.textContent =
+      'Tu solicitud está lista. Pulsa dentro del texto, selecciona todo y elige Copiar. Después abre Messenger y pega el mensaje.';
+
+    summaryBox.focus();
+    summaryBox.select();
+
+    let messengerButton = document.getElementById('quote-messenger-button');
+
+    if (!messengerButton) {
+      messengerButton = document.createElement('a');
+      messengerButton.id = 'quote-messenger-button';
+      messengerButton.href = 'https://m.me/191566717994401';
+      messengerButton.target = '_blank';
+      messengerButton.rel = 'noopener';
+      messengerButton.className = 'btn messenger';
+      messengerButton.style.marginTop = '12px';
+      messengerButton.textContent = 'Abrir Messenger para enviar mi solicitud ↗';
+      summaryBox.insertAdjacentElement('afterend', messengerButton);
+    }
+
+    messengerButton.onclick = () => {
+      window.open('https://m.me/191566717994401', '_blank');
+    };
   });
 }
-
+  
 
   const tourButtons = document.querySelectorAll('.tour-filter');
   const tourCards = document.querySelectorAll('#paquetes-grid .tour-card');
