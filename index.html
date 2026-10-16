@@ -4,7 +4,11 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#063b3d">
-  <meta name="description" content="Descubre cenotes, zonas arqueológicas, playas y experiencias en Yucatán con Yucatowntravel y Fernando Baeza.">
+  
+<meta name="description" content="Descubre cenotes, zonas arqueológicas, playas y experiencias en Yucatán con Yucatowntravel y Fernando Baeza.">
+
+  
+
   <title>Yucatowntravel | Descubre Yucatán</title> 
   <link rel="manifest" href="manifest.json">
   <link rel="icon" href="icon.svg" type="image/svg+xml">
@@ -245,29 +249,68 @@
   }));
 
 
-  const quoteForm = document.getElementById('quote-form');
-  if (quoteForm) quoteForm.addEventListener('submit', event => {
+  
+const quoteForm = document.getElementById('quote-form');
+
+if (quoteForm) {
+  quoteForm.addEventListener('submit', async event => {
     event.preventDefault();
+
     const formData = new FormData(quoteForm);
     const fields = [
-      ['Nombre', 'nombre'], ['Fecha', 'fecha'], ['Salida', 'salida'],
-      ['Destino', 'destino'], ['Personas', 'personas'], ['Servicio', 'servicio'],
-      ['Detalles', 'detalles']
+      ['Nombre', 'nombre'],
+      ['Fecha del recorrido', 'fecha'],
+      ['Ciudad de salida', 'salida'],
+      ['Destino o experiencia', 'destino'],
+      ['Número de personas', 'personas'],
+      ['Servicio solicitado', 'servicio'],
+      ['Detalles adicionales', 'detalles']
     ];
-    const lines = ['Hola, Fernando. Quiero solicitar una cotización para Yucatowntravel:'];
+
+    const lines = [
+      'Hola, Fernando. Quiero solicitar una cotización para Yucatowntravel.'
+    ];
+
     fields.forEach(([label, key]) => {
       const value = String(formData.get(key) || '').trim();
       if (value) lines.push(label + ': ' + value);
     });
-    lines.push('Por favor, confírmame disponibilidad, qué incluye el servicio y el precio final en MXN.');
-    document.getElementById('quote-status').textContent = 'Se abrirá Messenger. Revisa el mensaje y envíalo para completar tu solicitud.';
-    window.open('https://m.me/191566717994401', '_blank', 'noopener');
-    if (navigator.clipboard && navigator.clipboard.writeText) {
-      navigator.clipboard.writeText(lines.join('\n')).then(() => {
-        document.getElementById('quote-status').textContent = 'Resumen copiado. Pégalo en el chat de Messenger para enviarlo.';
-      }).catch(() => {});
+
+    lines.push(
+      'Por favor, confírmame disponibilidad, qué incluye el servicio y el precio final en MXN.'
+    );
+
+    const summary = lines.join('\n');
+    const status = document.getElementById('quote-status');
+
+    window.open('https://m.me/191566717994401', '_blank');
+
+    let copied = false;
+
+    try {
+      await navigator.clipboard.writeText(summary);
+      copied = true;
+    } catch (error) {
+      try {
+        const textarea = document.createElement('textarea');
+        textarea.value = summary;
+        textarea.style.position = 'fixed';
+        textarea.style.left = '-9999px';
+        document.body.appendChild(textarea);
+        textarea.select();
+        copied = document.execCommand('copy');
+        textarea.remove();
+      } catch (copyError) {
+        copied = false;
+      }
     }
+
+    status.textContent = copied
+      ? 'Resumen copiado. En Messenger, pega el mensaje y pulsa Enviar.'
+      : 'Messenger está abierto. Si no se copió el resumen, vuelve aquí e inténtalo de nuevo.';
   });
+}
+
 
   const tourButtons = document.querySelectorAll('.tour-filter');
   const tourCards = document.querySelectorAll('#paquetes-grid .tour-card');
